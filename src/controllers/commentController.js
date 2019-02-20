@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
-import { CommentSchema } from '../models/commentModel';
+import { Comment } from '../models/commentModel';
 
-const Comment = mongoose.model('comment', CommentSchema);
+
 var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const addNewComment = async (req, res) => {
