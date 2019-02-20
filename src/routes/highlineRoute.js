@@ -10,7 +10,7 @@ const highlineRoutes = (app) => {
     app.route('/highline/:highlineId')
         .get(getHighlineById)
         .put(auth, updateHighline)
-        .delete(deleteHighline);
+        .delete(auth, deleteHighline);
 
     app.route('/highline/image/:highlineId')
         .put(auth, Upload.array('imagesUrl', 3), addNewImage)
