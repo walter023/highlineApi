@@ -9,7 +9,6 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 export const signUp = async (req, res) => {
     try {
         var user = await User.find({ email: req.body.email });
-
         if (user.length >= 1)
             throw new AppError('email already exsit.', 409);
 
@@ -29,8 +28,7 @@ export const signUp = async (req, res) => {
 
 export const sigIn = async (req, res) => {
     try {
-        var user = await User.findOne({ email: req.body.email });
-
+        var user = await User.findOne({ email: req.body.email }); 
         if (!user)
             throw new AppError('email no found.', 404);
 
