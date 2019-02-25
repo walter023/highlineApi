@@ -16,7 +16,7 @@ export const addNewLocation = async (req, res) => {
 
 export const getLocations = async (req, res) => {
     try {
-        var locations = await Location.find({}).populate('highlines');
+        var locations = await Location.find({}).populate('highlines', 'imagesUrl');
         res.json({ ...generalResponse, data: locations });
     }
     catch (error) {
@@ -29,7 +29,7 @@ export const getLocationById = async (req, res) => {
     try {
 
         validateLocation(req.params.locationId);
-        var  location = await  Location.findById(req.params.locationId).populate('highlines');
+        var location = await Location.findById(req.params.locationId).populate('highlines');
         res.json({ ...generalResponse, data: location });
     }
     catch (error) {
@@ -40,7 +40,8 @@ export const getLocationById = async (req, res) => {
 export const updateLocation = async (req, res) => {
     try {
         validateLocation(req.params.locationId);
-        var locationToUpdate = await Location.findOneAndUpdate({ _id: req.params.locationId }, req.body, { new: true });
+        var locationToUpdate = await Location.findOneAndUpdate({ _id: req.params.locationId },
+            req.body, { new: true }).populate('highlines');
         res.json({ ...generalResponse, data: locationToUpdate });
     }
     catch (error) {
