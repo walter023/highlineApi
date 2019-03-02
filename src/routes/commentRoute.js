@@ -5,16 +5,17 @@ import {
     updateComment,
     deleteComment
 } from '../controllers/commentController'
+import auth from '../utilities/authorization';
 
 const commentRoute = (app) => {
     app.route('/comment')
         .get(getsComments)
-        .post(addNewComment);
+        .post(auth, addNewComment);
 
     app.route('/comment/:commentId')
-        .get(getcommentById)
-        .put(updateComment)
-        .delete(deleteComment);
+        .get(auth,getcommentById)
+        .put(auth, updateComment)
+        .delete(auth, deleteComment);
 }
 
 export default commentRoute;

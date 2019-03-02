@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const Schema = mongoose.Schema;
 
-export const CommentSchema = new Schema({
+const CommentSchema = new Schema({
     highlineId: {
         type: String,
         required: 'Enter highlineId'
@@ -16,3 +16,5 @@ export const CommentSchema = new Schema({
         required: 'Enter the comment'
     },
 });
+
+export default mongoose.model('comment', CommentSchema);

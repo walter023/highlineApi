@@ -75,7 +75,7 @@ export const addNewImage = async (req, res) => {
         }
         var higlineFound = await Highline.findById(highlineId);
         if (!higlineFound) {
-            throw new AppError("Highline no found.", 404)
+            throw new AppError("Highline no found.", 404);
         }
         var imagesUrl = higlineFound.imagesUrl || [];
         for (let file of req.files) {
