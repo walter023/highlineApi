@@ -20,7 +20,12 @@ export const addNewComment = async (req, res) => {
 
 export const getsComments = async (req, res) => {
     try {
-        var comments = await Comment.find({});
+        validateHighline(req.body.highlineId);
+        var comments = await Comment.find({ highlineId: req.body.highlineId });
+
+        if (comments < 1)
+            throw new appError('no comments found.', 404)
+
         res.json({ ...generalResponse, data: comments });
     }
     catch (error) {
@@ -31,7 +36,7 @@ export const getsComments = async (req, res) => {
 
 export const getcommentById = async (req, res) => {
     try {
-        var comment = await Comment.findById(req.params.commentId);
+        var comment = await Comment.findById(req.body.commentId);
         res.json({ ...generalResponse, data: comment });
     }
     catch (error) {
@@ -45,7 +50,7 @@ export const updateComment = async (req, res) => {
         validateHighline(req.body.highlineId);
 
         if (!req.body.commentId)
-            throw new appError("comment id is required"); 
+            throw new appError("comment id is required");
 
         var commmentToDelete = comment.findById(req.body.commentId);
         if (!commmentToDelete)

@@ -2,6 +2,7 @@ import Highline from '../models/highlineModel';
 import Location from '../models/locationModel';
 import AppError from '../utilities/appError';
 import fs from 'fs';
+import path from 'path';
 
 var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
@@ -79,7 +80,7 @@ export const addNewImage = async (req, res) => {
         }
         var imagesUrl = higlineFound.imagesUrl || [];
         for (let file of req.files) {
-            imagesUrl.push(file.path);
+            imagesUrl.push(`http://52.63.227.156:3000/${file.path.replace('\\', '/')}`);
         }
         var highlineToupdate = await Highline.findOneAndUpdate({ _id: req.params.highlineId },
             { imagesUrl: imagesUrl }, { new: true });
@@ -94,27 +95,32 @@ export const addNewImage = async (req, res) => {
 
 export const deleteImage = async (req, res) => {
     try {
-        var imagePath = req.body.image;
+        var imgUrl = req.body.image;
         var highlineId = req.params.highlineId;
-        if (!highlineId || !imagePath)
+        if (!highlineId || !imgUrl)
             throw new AppError("Highline id and image url are required.");
 
         var higlineFound = await Highline.findById(highlineId);
         if (!higlineFound)
-            throw new AppError("HIghline no found.", 404)
+            throw new AppError("HIghline no found.", 404);
 
-        var imagesUrl = higlineFound.imagesUrl;
-        if (!imagesUrl)
-            throw new AppError("image no found.", 404)
+        if (higlineFound.imagesUrl < 1)
+            throw new AppError("no images found.", 404);
 
-        imagesUrl = imagesUrl.filter(urlValue => urlValue != imagePath);
+        var images = higlineFound.imagesUrl.filter(urlValue => urlValue === imgUrl);
 
-        await fs.unlink(imagePath, resultHandler);
+        if (!images[0])
+            throw new AppError("no image found.", 404);
+
+        await fs.unlink(`uploads\\${path.basename(images[0])}`, resultHandler);
+
+        images = higlineFound.imagesUrl.filter(urlValue => urlValue != imgUrl);
 
         var highlineToupdate = await Highline.findOneAndUpdate({ _id: req.params.highlineId },
-            { imagesUrl: imagesUrl }, { new: true });
+            { imagesUrl: images }, { new: true });
 
         res.json({ ...generalResponse, data: highlineToupdate });
+
     }
     catch (error) {
         res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
