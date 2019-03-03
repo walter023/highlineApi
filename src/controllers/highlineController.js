@@ -104,7 +104,7 @@ export const deleteImage = async (req, res) => {
         if (!higlineFound)
             throw new AppError("HIghline no found.", 404);
 
-        if (higlineFound.imagesUrl < 1)
+        if (higlineFound.imagesUrl.length < 1)
             throw new AppError("no images found.", 404);
 
         var images = higlineFound.imagesUrl.filter(urlValue => urlValue === imgUrl);
@@ -112,7 +112,7 @@ export const deleteImage = async (req, res) => {
         if (!images[0])
             throw new AppError("no image found.", 404);
 
-        await fs.unlink(`uploads\\${path.basename(images[0])}`, resultHandler);
+        await fs.unlink(`uploads/${path.basename(images[0])}`, resultHandler);
 
         images = higlineFound.imagesUrl.filter(urlValue => urlValue != imgUrl);
 
