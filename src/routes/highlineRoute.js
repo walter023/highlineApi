@@ -1,5 +1,5 @@
-import { addNewHighline, getsHighlines, getHighlineById, updateHighline, deleteHighline, addNewImage, deleteImage } from '../controllers/highlineController';
-import Upload from '../utilities/storageImage';
+import { addNewHighline, getsHighlines, getHighlineById, updateHighline, deleteHighline, addNewImage, deleteImages } from '../controllers/highlineController';
+import upload from '../utilities/storageImage';
 import auth from '../utilities/authorization';
 
 const highlineRoutes = (app) => {
@@ -13,8 +13,8 @@ const highlineRoutes = (app) => {
         .delete(auth, deleteHighline);
 
     app.route('/highline/image/:highlineId')
-        .put(auth, Upload.array('imagesUrl', 3), addNewImage)
-        .delete(auth, deleteImage);
+        .put(auth, upload.array('imagesUrl', 3), addNewImage)
+        .delete(auth, deleteImages);
 }
 
 export default highlineRoutes;

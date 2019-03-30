@@ -1,13 +1,27 @@
 import multer from 'multer';
 import AppError from './appError';
-import path from 'path';
+import aws from 'aws-sdk';
+import multerS3 from 'multer-s3';
+import url from 'url';
+import { config } from '../../config';
+import appError from '../utilities/appError';
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/');
+aws.config.update({
+    secretAccessKey: config.bucket.secretAccessKey,
+    accessKeyId: config.bucket.accessKeyId,
+    region: config.bucket.region
+})
+var s3 = new aws.S3();
+
+const storage = multerS3({
+    s3: s3,
+    bucket: 'highlineguide',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    metadata: function (req, file, cb) {
+        cb(null, { FieldName: req.userData.userId });
     },
-    filename: function (req, file, cb) {
-        cb(null, new Date().getMilliseconds().toString() + new Date().getSeconds().toString() + new Date().getMinutes().toString() + new Date().getHours().toString() + path.extname(file.originalname));
+    key: function (req, file, cb) {
+        cb(null, `highlines/${Date.now()}${file.originalname}`);
     }
 });
 
@@ -27,3 +41,24 @@ export default multer({
     },
     fileFilter: fileFilter
 });
+
+export const deleteS3Images = images => {
+    var objects = [];
+    for (let k of images) {
+        objects.push({ Key: url.parse(k).path.substring(1) });
+    }
+    var options = {
+        Bucket: 'highlineguide',
+        Delete: {
+            Objects: objects,
+        },
+    };
+    s3.deleteObjects(options, function (err, data) {
+        if (data) {
+            console.log("File successfully deleted");
+        } else {
+            throw new appError("error deleting.", err);
+        }
+    });
+}
+

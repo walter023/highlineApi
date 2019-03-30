@@ -20,7 +20,7 @@ mongoose.connect(config.db.dbUrl, { useNewUrlParser: true, useFindAndModify: fal
 // bodyparser setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use('/uploads', express.static('uploads'));
+//app.use('/uploads', express.static('uploads'));
 
 
 locationRoutes(app);

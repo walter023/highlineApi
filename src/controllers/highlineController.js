@@ -1,8 +1,8 @@
 import Highline from '../models/highlineModel';
 import Location from '../models/locationModel';
 import AppError from '../utilities/appError';
-import fs from 'fs';
-import path from 'path';
+import { deleteS3Images } from '../utilities/storageImage';
+
 
 var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
@@ -14,6 +14,11 @@ export const addNewHighline = async (req, res) => {
         }
         let newHighline = new Highline(req.body);
         var saveHighline = await newHighline.save();
+      
+        location.highlines.push(saveHighline._id);
+        await Location.findOneAndUpdate({ _id: location._id },
+            location);
+ 
         res.json({ ...generalResponse, data: saveHighline });
     }
     catch (error) {
@@ -80,7 +85,7 @@ export const addNewImage = async (req, res) => {
         }
         var imagesUrl = higlineFound.imagesUrl || [];
         for (let file of req.files) {
-            imagesUrl.push(`http://52.63.227.156:3000/${file.path.replace('\\', '/')}`);
+            imagesUrl.push(file.location);
         }
         var highlineToupdate = await Highline.findOneAndUpdate({ _id: req.params.highlineId },
             { imagesUrl: imagesUrl }, { new: true });
@@ -93,29 +98,32 @@ export const addNewImage = async (req, res) => {
     }
 };
 
-export const deleteImage = async (req, res) => {
+export const deleteImages = async (req, res) => {
     try {
-        var imgUrl = req.body.image;
+        var images = req.body.images;
         var highlineId = req.params.highlineId;
-        if (!highlineId || !imgUrl)
-            throw new AppError("Highline id and image url are required.");
+        if (!highlineId || images.length < 1)
+            throw new AppError("Highline id and image(s) url are required.");
 
         var higlineFound = await Highline.findById(highlineId);
+      
         if (!higlineFound)
             throw new AppError("HIghline no found.", 404);
 
         if (higlineFound.imagesUrl.length < 1)
             throw new AppError("no images found.", 404);
 
-        var images = higlineFound.imagesUrl.filter(urlValue => urlValue === imgUrl);
+        images = higlineFound.imagesUrl.filter(function (e) {
+            return this.indexOf(e) >= 0;
+        }, images);
 
-        if (!images[0])
+        if (images.length < 1)
             throw new AppError("no image found.", 404);
 
-        if (fs.exists(`uploads/${path.basename(images[0])}`)) 
-            await fs.unlink(`uploads/${path.basename(images[0])}`, resultHandler);
-
-        images = higlineFound.imagesUrl.filter(urlValue => urlValue != imgUrl);
+        deleteS3Images(images);
+        images = higlineFound.imagesUrl.filter(function (e) {
+            return this.indexOf(e) < 0;
+        }, images);
 
         var highlineToupdate = await Highline.findOneAndUpdate({ _id: req.params.highlineId },
             { imagesUrl: images }, { new: true });
@@ -138,11 +146,3 @@ const validateHighline = async (highlineId) => {
         throw new AppError("Highline no found", 404);
     }
 };
-
-const resultHandler = (error) => {
-    if (error) {
-        throw new AppError(error);
-    } else {
-        generalResponse = { ...generalResponse, message: "file deleted" };
-    }
-}
