@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
+import anchorSchema from '../models/anchorSchema';
 
 const Schema = mongoose.Schema;
+const subSchema = anchorSchema
+
 const HighlineSchema = new Schema({
     highlineName: {
         type: String,
@@ -18,24 +21,7 @@ const HighlineSchema = new Schema({
         type: String,
         required: 'Enter how high is the highline.'
     },
-    anchors: [{
-        rhsMain: {
-            type: String,
-            required: 'Enter RSH main'
-        },
-        rhsBackUp: {
-            type: String,
-            required: 'Enter RSH Main'
-        },
-        lhsMain: {
-            type: String,
-            required: 'Enter LSH Main'
-        },
-        lhsBackUp: {
-            type: String,
-            required: 'Enter LSH Main'
-        }
-    }],
+    anchors: [subSchema],
     imagesUrl: [{
         type: String
     }],

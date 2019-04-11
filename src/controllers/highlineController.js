@@ -8,12 +8,12 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const addNewHighline = async (req, res) => {
     try {
-        var location = await Location.findById(req.body.location);
+        let location = await Location.findById(req.body.location);
         if (!location) {
             throw new AppError("location no found", 404);
         }
-        let newHighline = new Highline(req.body);
-        var saveHighline = await newHighline.save();
+        const newHighline = new Highline(req.body);
+        let saveHighline = await newHighline.save();
       
         location.highlines.push(saveHighline._id);
         await Location.findOneAndUpdate({ _id: location._id },
