@@ -13,7 +13,7 @@ export const addNewHighline = async (req, res) => {
             throw new AppError("location no found", 404);
         }
         const newHighline = new Highline(req.body);
-        let saveHighline = await newHighline.save();
+        const saveHighline = await newHighline.save();
       
         location.highlines.push(saveHighline._id);
         await Location.findOneAndUpdate({ _id: location._id },
