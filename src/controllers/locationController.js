@@ -16,8 +16,21 @@ export const addNewLocation = async (req, res) => {
 
 export const getLocations = async (req, res) => {
     try {
-        var locations = await Location.find({}).populate('highlines', 'imagesUrl');
-        res.json({ ...generalResponse, data: locations });
+        const locations = await Location.aggregate([
+            {
+                $geoNear: {
+                    near: { type: "Point", coordinates: [parseFloat(req.params.long), parseFloat(req.params.latt)] },
+                    distanceField: "dist.calculated",
+                    maxDistance: 100000,
+                    num: 20,
+                    spherical: true
+                }
+            }
+        ]);
+        Location.populate(locations, { path: "highlines" }, (err, result) => {
+            if (err) { throw new AppError(err); }
+            res.json({ ...generalResponse, data: result });
+        });
     }
     catch (error) {
         res.json({ ...generalResponse, messageCode: 500, message: error.message });
@@ -27,7 +40,6 @@ export const getLocations = async (req, res) => {
 
 export const getLocationById = async (req, res) => {
     try {
-
         validateLocation(req.params.locationId);
         var location = await Location.findById(req.params.locationId).populate('highlines');
         res.json({ ...generalResponse, data: location });

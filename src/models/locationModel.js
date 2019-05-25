@@ -11,21 +11,13 @@ const LocationSchema = new Schema({
         type: String,
         required: 'Enter description'
     },
-    latitude: {
-        type: Number,
-        required: 'Enter latitude',
-        validate: {
-            validator: lat => isFinite(lat) && Math.abs(lat) <= 90,
-            message: props => `The latitude provided is ${props.value} and it must be between -90 and 90 degrees !`
+    location: {
+        type: {
+            type: String,
+            enum: ['Point'], 
+            required: true
         },
-    },
-    longitude: {
-        type: Number,
-        required: 'Enter longitude',
-        validate: {
-            validator: lng => isFinite(lng) && Math.abs(lng) <= 180,
-            message: props => `The longitude provided is ${props.value} and it must be between -90 and 90 degrees !`
-        },
+        coordinates: []
     },
     approach: {
         type: String,
@@ -40,5 +32,7 @@ const LocationSchema = new Schema({
         ref: 'Highline'
     }],
 });
+
+LocationSchema.index({ location: "2dsphere" });
 
 export default mongoose.model('Location', LocationSchema);

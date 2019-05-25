@@ -33,6 +33,7 @@ export const sigIn = async (req, res) => {
             throw new AppError('email no found.', 404);
 
         await bcrypt.compare(req.body.password, user.password, (error, result) => {
+           
             if (error)
                 throw new AppError(error);
 
@@ -47,6 +48,9 @@ export const sigIn = async (req, res) => {
                         expiresIn: "1h"
                     })
                 res.json({ ...generalResponse, message: 'log in successful.', data: token });
+            }
+            else{
+                res.json({ ...generalResponse, message: 'auth failed.', messageCode:401});
             }
         });
     }

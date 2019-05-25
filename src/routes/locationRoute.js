@@ -3,9 +3,11 @@ import auth from '../utilities/authorization';
 
 const locationRoutes = (app) => {
     app.route('/location')
-    .get(getLocations)
     .post(auth, addNewLocation);
 
+    app.route('/location/:long/:latt')
+    .get(getLocations);
+  
     app.route('/location/:locationId')
     .get(getLocationById)
     .put(auth, updateLocation);
