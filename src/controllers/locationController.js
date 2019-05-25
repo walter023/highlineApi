@@ -21,8 +21,8 @@ export const getLocations = async (req, res) => {
                 $geoNear: {
                     near: { type: "Point", coordinates: [parseFloat(req.params.long), parseFloat(req.params.latt)] },
                     distanceField: "dist.calculated",
-                    maxDistance: 120000,
-                    num: 5,
+                    maxDistance: 100000,
+                    num: 20,
                     spherical: true
                 }
             }
