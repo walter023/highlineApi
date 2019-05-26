@@ -14,11 +14,11 @@ export const addNewHighline = async (req, res) => {
         }
         const newHighline = new Highline(req.body);
         const saveHighline = await newHighline.save();
-      
+
         location.highlines.push(saveHighline._id);
         await Location.findOneAndUpdate({ _id: location._id },
             location);
- 
+
         res.json({ ...generalResponse, data: saveHighline });
     }
     catch (error) {
@@ -29,7 +29,7 @@ export const addNewHighline = async (req, res) => {
 
 export const getsHighlines = async (req, res) => {
     try {
-        var highlines = await Highline.find({});
+        const highlines = await Highline.find({});
         res.json({ ...generalResponse, data: highlines });
     }
     catch (error) {
@@ -40,7 +40,11 @@ export const getsHighlines = async (req, res) => {
 
 export const getHighlineById = async (req, res) => {
     try {
-        validateHighline(req.params.highlineId)
+        validateHighline(req.params.highlineId);
+        const highline = await Location.findById(req.params.locationId).populate({
+            path: 'highlines',
+            match: { _id: { $eq: req.params.highlineId } }
+        });
         res.json({ ...generalResponse, data: highline });
     }
     catch (error) {
@@ -106,7 +110,7 @@ export const deleteImages = async (req, res) => {
             throw new AppError("Highline id and image(s) url are required.");
 
         var higlineFound = await Highline.findById(highlineId);
-      
+
         if (!higlineFound)
             throw new AppError("HIghline no found.", 404);
 
