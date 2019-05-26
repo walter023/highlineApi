@@ -7,7 +7,7 @@ const highlineRoutes = (app) => {
         .get(getsHighlines)
         .post(auth, addNewHighline);
 
-    app.route('/highline/:highlineId')
+    app.route('/highline/:locationId/:highlineId')
         .get(getHighlineById)
         .put(auth, updateHighline)
         .delete(auth, deleteHighline);
