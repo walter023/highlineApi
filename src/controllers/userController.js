@@ -45,7 +45,7 @@ export const sigIn = async (req, res) => {
                     },
                     config.JWT_KEY.key,
                     {
-                        expiresIn: "1h"
+                        expiresIn: "8h"
                     })
                 res.json({ ...generalResponse, message: 'log in successful.', data: token });
             }

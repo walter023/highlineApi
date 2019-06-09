@@ -36,11 +36,12 @@ export const getsHighlines = async (req, res) => {
         res.json({ ...generalResponse, messageCode: 500, message: error.message });
         return console.error(error);
     }
-};
+}; 
 
 export const getHighlineById = async (req, res) => {
     try {
-        validateHighline(req.params.highlineId);
+       await validateHighline(req.params.highlineId);
+       await validateLocation(req.params.locationId);
         const highline = await Location.findById(req.params.locationId).populate({
             path: 'highlines',
             match: { _id: { $eq: req.params.highlineId } }
@@ -133,7 +134,6 @@ export const deleteImages = async (req, res) => {
             { imagesUrl: images }, { new: true });
 
         res.json({ ...generalResponse, data: highlineToupdate });
-
     }
     catch (error) {
         res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
@@ -147,6 +147,16 @@ const validateHighline = async (highlineId) => {
     }
     var higlineFound = await Highline.findById(highlineId);
     if (!higlineFound) {
+        throw new AppError("Highline no found", 404);
+    }
+};
+
+const validateLocation = async (locationId) => {
+    if (!locationId) {
+        throw new AppError("location id is required.");
+    }
+    var locationFound = await Location.findById(locationId);
+    if (!locationFound) {
         throw new AppError("Highline no found", 404);
     }
 };

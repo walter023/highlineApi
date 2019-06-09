@@ -7,14 +7,16 @@ const highlineRoutes = (app) => {
         .get(getsHighlines)
         .post(auth, addNewHighline);
 
+    app.route('/highline/image/:highlineId')
+        .put(auth, upload.array('imagesUrl', 3), addNewImage)
+        .delete(auth, deleteImages);
+
     app.route('/highline/:locationId/:highlineId')
         .get(getHighlineById)
         .put(auth, updateHighline)
         .delete(auth, deleteHighline);
 
-    app.route('/highline/image/:highlineId')
-        .put(auth, upload.array('imagesUrl', 3), addNewImage)
-        .delete(auth, deleteImages);
+
 }
 
 export default highlineRoutes;
