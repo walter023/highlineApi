@@ -23,6 +23,7 @@ const storage = multerS3({
     key: function (req, file, cb) {
         cb(null, `highlines/${Date.now()}${file.originalname}`);
     }
+   
 });
 
 const fileFilter = (req, file, cb) => {

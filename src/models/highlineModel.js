@@ -26,8 +26,12 @@ const HighlineSchema = new Schema({
         type: String
     }],
     establishedBy: {
-        type: String
+        type: String,
     },
+    comments: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Comment'
+    }],
     created_date: {
         type: Date
     }

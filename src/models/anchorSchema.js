@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import anchorType from '../utilities/enum';
+import anchorType from '../utilities/anchorType';
 
 
 const anchorSchema = mongoose.Schema({
