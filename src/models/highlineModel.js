@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import anchorSchema from '../models/anchorSchema';
 
 const Schema = mongoose.Schema;
-const subSchema = anchorSchema
+const subSchema = anchorSchema;
 
 const HighlineSchema = new Schema({
     highlineName: {
@@ -21,7 +21,7 @@ const HighlineSchema = new Schema({
         type: String,
         required: 'Enter how high is the highline.'
     },
-    anchors: [subSchema],
+    anchors: subSchema,
     imagesUrl: [{
         type: String
     }],
