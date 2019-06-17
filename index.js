@@ -5,6 +5,7 @@ import locationRoutes from './src/routes/locationRoute';
 import highlineRoute from './src/routes/highlineRoute';
 import commentRoute from "./src/routes/commentRoute"
 import userRoute from "./src/routes/userRoute"
+import cors from './src/utilities/cors' 
 import { config } from './config';
 
 const app = express();
@@ -20,8 +21,8 @@ mongoose.connect(config.db.dbUrl, { useNewUrlParser: true, useFindAndModify: fal
 // bodyparser setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-//app.use('/uploads', express.static('uploads'));
 
+cors(app);
 
 locationRoutes(app);
 highlineRoute(app);

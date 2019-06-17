@@ -73,8 +73,10 @@ export const deleteHighline = async (req, res) => {
         res.json({ ...generalResponse });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -98,8 +100,10 @@ export const addNewImage = async (req, res) => {
         res.json({ ...generalResponse, data: highlineToupdate });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
-        console.log(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -136,8 +140,10 @@ export const deleteImages = async (req, res) => {
         res.json({ ...generalResponse, data: highlineToupdate });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
-        console.log(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 

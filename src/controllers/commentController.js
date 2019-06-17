@@ -14,7 +14,10 @@ export const addNewComment = async (req, res) => {
         res.json({ ...generalResponse, data: commentSaved });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -29,8 +32,10 @@ export const getsComments = async (req, res) => {
         res.json({ ...generalResponse, data: comments });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -40,8 +45,10 @@ export const getcommentById = async (req, res) => {
         res.json({ ...generalResponse, data: comment });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -63,8 +70,10 @@ export const updateComment = async (req, res) => {
         res.json({ ...generalResponse, data: commentUpdated });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -86,8 +95,10 @@ export const deleteComment = async (req, res) => {
         res.json({ ...generalResponse });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
