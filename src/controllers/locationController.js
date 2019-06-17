@@ -33,8 +33,10 @@ export const getLocations = async (req, res) => {
         });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
@@ -45,10 +47,12 @@ export const getLocationById = async (req, res) => {
         res.json({ ...generalResponse, data: location });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
-}
+};
 export const updateLocation = async (req, res) => {
     try {
         validateLocation(req.params.locationId);
@@ -57,8 +61,10 @@ export const updateLocation = async (req, res) => {
         res.json({ ...generalResponse, data: locationToUpdate });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 

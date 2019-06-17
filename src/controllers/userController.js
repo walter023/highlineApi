@@ -22,18 +22,21 @@ export const signUp = async (req, res) => {
         res.json({ ...generalResponse, message: 'user created.' });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
+        res.status(error.status || 500)
+        .json({
+            error: error.message
+        });
     }
 };
 
 export const sigIn = async (req, res) => {
     try {
-        var user = await User.findOne({ email: req.body.email }); 
+        var user = await User.findOne({ email: req.body.email });
         if (!user)
             throw new AppError('email no found.', 404);
 
         await bcrypt.compare(req.body.password, user.password, (error, result) => {
-           
+
             if (error)
                 throw new AppError(error);
 
@@ -45,17 +48,23 @@ export const sigIn = async (req, res) => {
                     },
                     config.JWT_KEY.key,
                     {
-                        expiresIn: "8h"
+                        expiresIn: "1h"
                     })
                 res.json({ ...generalResponse, message: 'log in successful.', data: token });
             }
-            else{
-                res.json({ ...generalResponse, message: 'auth failed.', messageCode:401});
+            else {
+                res.status(401)
+                    .json({
+                        error: 'auth failed.'
+                    });
             }
         });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -66,7 +75,9 @@ export const deleteUser = async (req, res) => {
         res.json({ ...generalResponse, message: 'user deleted.' });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(500)
+        .json({
+            error: error.message
+        });
     }
 };
