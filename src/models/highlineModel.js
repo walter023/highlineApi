@@ -37,4 +37,5 @@ const HighlineSchema = new Schema({
     }
 });
 
+
 export default mongoose.model('Highline', HighlineSchema);
