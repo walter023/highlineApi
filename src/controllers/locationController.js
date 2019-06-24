@@ -10,7 +10,10 @@ export const addNewLocation = async (req, res) => {
         res.json({ ...generalResponse, data: saveLocation });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.error });
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -29,42 +32,56 @@ export const getLocations = async (req, res) => {
         ]);
         Location.populate(locations, { path: "highlines" }, (err, result) => {
             if (err) { throw new AppError(err); }
+            if (result.length <= 0){ throw new AppError('Sorry not highlines around you.', 404);}
             res.json({ ...generalResponse, data: result });
         });
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
     }
 };
-
 export const getLocationById = async (req, res) => {
     try {
         validateLocation(req.params.locationId);
-        var location = await Location.findById(req.params.locationId).populate('highlines');
+        const location = await Location.findById(req.params.locationId);
         res.json({ ...generalResponse, data: location });
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
+    }
+};
+export const getLocationNames = async (req, res) => {
+    try {
+        const location = await Location
+            .find({ locationName: { $regex: `^${req.params.name}`, $options: 'i' } })
+            .select('locationName description approach location');
+        res.json({ ...generalResponse, data: location });
+    }
+    catch (error) {
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 export const updateLocation = async (req, res) => {
     try {
         validateLocation(req.params.locationId);
-        var locationToUpdate = await Location.findOneAndUpdate({ _id: req.params.locationId },
+        const locationToUpdate = await Location.findOneAndUpdate({ _id: req.params.locationId },
             req.body, { new: true }).populate('highlines');
         res.json({ ...generalResponse, data: locationToUpdate });
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
     }
 };
 
