@@ -8,7 +8,7 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const addNewHighline = async (req, res) => {
     try {
-        let location = await Location.findById(req.body.location);
+        let location = await Location.findById(req.body.locationId);
         if (!location) {
             throw new AppError("location no found", 404);
         }

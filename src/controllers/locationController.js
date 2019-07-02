@@ -60,7 +60,7 @@ export const getLocationNames = async (req, res) => {
     try {
         const location = await Location
             .find({ locationName: { $regex: `^${req.params.name}`, $options: 'i' } })
-            .select('locationName description approach location');
+            .select('locationName description approach location').limit(5);
         res.json({ ...generalResponse, data: location });
     }
     catch (error) {
