@@ -8,7 +8,7 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const addNewHighline = async (req, res) => {
     try {
-        let location = await Location.findById(req.body.location);
+        let location = await Location.findById(req.body.locationId);
         if (!location) {
             throw new AppError("location no found", 404);
         }
@@ -22,8 +22,10 @@ export const addNewHighline = async (req, res) => {
         res.json({ ...generalResponse, data: saveHighline });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
-        console.log(error);
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -33,15 +35,17 @@ export const getsHighlines = async (req, res) => {
         res.json({ ...generalResponse, data: highlines });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
-}; 
+};
 
 export const getHighlineById = async (req, res) => {
     try {
-       await validateHighline(req.params.highlineId);
-       await validateLocation(req.params.locationId);
+        await validateHighline(req.params.highlineId);
+        await validateLocation(req.params.locationId);
         const highline = await Location.findById(req.params.locationId).populate({
             path: 'highlines',
             match: { _id: { $eq: req.params.highlineId } }
@@ -49,8 +53,10 @@ export const getHighlineById = async (req, res) => {
         res.json({ ...generalResponse, data: highline });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -61,8 +67,10 @@ export const updateHighline = async (req, res) => {
         res.json({ ...generalResponse, data: highlineUpdated });
     }
     catch (error) {
-        res.json({ ...generalResponse, messageCode: 500, message: error.message });
-        return console.error(error);
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -74,9 +82,9 @@ export const deleteHighline = async (req, res) => {
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -101,9 +109,9 @@ export const addNewImage = async (req, res) => {
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
     }
 };
 
@@ -141,9 +149,9 @@ export const deleteImages = async (req, res) => {
     }
     catch (error) {
         res.status(error.status || 500)
-        .json({
-            error: error.message
-        });
+            .json({
+                error: error.message
+            });
     }
 };
 

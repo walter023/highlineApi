@@ -14,6 +14,9 @@ export default (req, res, next) => {
         req.userData = decoded;
         next();
     } catch (error) {
-        res.json({ ...generalResponse, messageCode: error.status || 500, message: error.message });
+        res.status(error.status || 500)
+            .json({
+                error: error.message
+            });
     }
 };
