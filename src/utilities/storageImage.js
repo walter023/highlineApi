@@ -3,13 +3,13 @@ import AppError from './appError';
 import aws from 'aws-sdk';
 import multerS3 from 'multer-s3';
 import url from 'url';
-import { config } from '../../config';
 import appError from '../utilities/appError';
+require('dotenv').config();
 
 aws.config.update({
-    secretAccessKey: config.bucket.secretAccessKey,
-    accessKeyId: config.bucket.accessKeyId,
-    region: config.bucket.region
+    secretAccessKey: process.env.SECRET_BUCKET_KEY,
+    accessKeyId: process.env.BUCKET_KEY_IDEA,
+    region: process.env.REGION
 })
 var s3 = new aws.S3();
 
@@ -21,7 +21,7 @@ const storage = multerS3({
         cb(null, { FieldName: req.userData.userId });
     },
     key: function (req, file, cb) {
-        cb(null, `highlines/${Date.now()}${file.originalname}`);
+        cb(null, `highlines/${Date.now()}`);
     }
    
 });

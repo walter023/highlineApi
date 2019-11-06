@@ -6,7 +6,7 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 export const addNewLocation = async (req, res) => {
     try {
         let newLocation = new Location(req.body);
-        var saveLocation = await newLocation.save();
+        let saveLocation = await newLocation.save();
         res.json({ ...generalResponse, data: saveLocation });
     }
     catch (error) {
