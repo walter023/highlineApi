@@ -1,15 +1,15 @@
-## Highline API
+# Highline API
 
 Description of the project
 
-# How to install
+## How to install
 
 Follow this steps:
 - Clone repo
 - Run `npm install`
 - Run `npm start`
 
-# Local configuration
+## Local configuration
 
 Example of the .env
 
