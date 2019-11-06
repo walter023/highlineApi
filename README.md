@@ -11,9 +11,13 @@ Follow this steps:
 
 ## Local configuration
 
-Example of the .env
+PORT=
+DB_URL=
+JWT_KEY=
 
-````
-expo ABC=test
-````
+SECRET_BUCKET_KEY=
+BUCKET_KEY_ID=
+REGION=
+
+
 
