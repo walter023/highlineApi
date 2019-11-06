@@ -2,7 +2,7 @@ import User from '../models/userModel';
 import AppError from '../utilities/appError';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { config } from '../../config'
+require('dotenv').config();
 
 var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
@@ -46,7 +46,7 @@ export const sigIn = async (req, res) => {
                         email: user.email,
                         userId: user._id
                     },
-                    config.JWT_KEY.key,
+                    process.env.JWT_KEY,
                     {
                         expiresIn: "1h"
                     })
