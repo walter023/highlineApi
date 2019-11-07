@@ -14,7 +14,12 @@ const PORT = process.env.PORT;
 // mongoose connection
 mongoose.Promise = global.Promise;
 
-mongoose.connect(process.env.DB_URL, { useNewUrlParser: true, useFindAndModify: false, useCreateIndex: true }, (err) => {
+mongoose.connect(process.env.DB_URL, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
+    useUnifiedTopology: true
+}, (err) => {
     console.log('mongo db connection', err)
 });
 

@@ -3,17 +3,21 @@ import {
     getLocations,
     getLocationById,
     updateLocation,
-    getLocationNames
+    getLocationNames,
+    searchLocation
 }
-from '../controllers/locationController';
+    from '../controllers/locationController';
 import auth from '../utilities/authorization';
 
 const locationRoutes = (app) => {
     app.route('/location')
         .post(auth, addNewLocation);
 
-        app.route('/locationNames/:name')
+    app.route('/locationNames/:name')
         .get(getLocationNames);
+
+    app.route('/search/:name')
+        .get(searchLocation);
 
     app.route('/location/:long/:latt')
         .get(getLocations);
@@ -21,9 +25,6 @@ const locationRoutes = (app) => {
     app.route('/location/:locationId')
         .get(getLocationById)
         .put(auth, updateLocation);
-
- 
-
 }
 
 export default locationRoutes;
