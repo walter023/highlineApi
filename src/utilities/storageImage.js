@@ -9,7 +9,7 @@ require('dotenv').config();
 aws.config.update({
     secretAccessKey: process.env.SECRET_BUCKET_KEY,
     accessKeyId: process.env.BUCKET_KEY_ID,
-    region: process.env.REGION
+    region: 'ap-southeast-2'
 })
 var s3 = new aws.S3();
 
