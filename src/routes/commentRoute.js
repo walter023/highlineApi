@@ -1,21 +1,23 @@
 import {
-    addNewComment,
-    getsComments,
-    getcommentById,
-    updateComment,
-    deleteComment
-} from '../controllers/commentController'
-import auth from '../utilities/authorization';
+  addNewComment,
+  getsComments,
+  getcommentById,
+  updateComment,
+  deleteComment
+} from "../controllers/commentController";
+import auth from "../utilities/authorization";
 
-const commentRoute = (app) => {
-    app.route('/comment')
-        .get(getsComments)
-        .post(auth, addNewComment);
+const commentRoute = app => {
+  app
+    .route("/comment")
+    .get(getsComments)
+    .post(auth, addNewComment);
 
-    app.route('/comment/:commentId')
-        .get(auth,getcommentById)
-        .put(auth, updateComment)
-        .delete(auth, deleteComment);
-}
+  app
+    .route("/comment/:commentId")
+    .get(auth, getcommentById)
+    .put(auth, updateComment)
+    .delete(auth, deleteComment);
+};
 
 export default commentRoute;

@@ -12,5 +12,4 @@ const cors = (app) => {
         next();
     });
 };
-
 export default cors;

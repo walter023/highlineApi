@@ -1,7 +1,5 @@
 class AppError extends Error {
   constructor(message, status) {
-
-
     super(message);
 
     // Saving class name in the property of our custom error as a shortcut.
@@ -14,7 +12,6 @@ class AppError extends Error {
     // I'm going to use preferred HTTP status for this error types.
     // `500` is the default value if not specified.
     this.status = status || 500;
-
   }
-};
+}
 export default AppError;
