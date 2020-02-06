@@ -27,7 +27,6 @@ mongoose.connect(
   }
 );
 
-// bodyparser setup
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

@@ -17,10 +17,10 @@ const storage = multerS3({
   s3: s3,
   bucket: "highlineguide",
   contentType: multerS3.AUTO_CONTENT_TYPE,
-  metadata: function(req, file, cb) {
+  metadata: (req, file, cb) => {
     cb(null, { FieldName: req.userData.userId });
   },
-  key: function(req, file, cb) {
+  key: (req, file, cb) => {
     cb(null, `highlines/${Date.now()}`);
   }
 });
@@ -42,18 +42,18 @@ export default multer({
   fileFilter: fileFilter
 });
 
-export const deleteS3Images = images => {
-  var objects = [];
-  for (let k of images) {
-    objects.push({ Key: url.parse(k).path.substring(1) });
+export const deleteS3Images = imageUrls => {
+  var imageNames = [];
+  for (let k of imageUrls) {
+    imageNames.push({ Key: url.parse(k).path.substring(1) });
   }
   var options = {
     Bucket: "highlineguide",
     Delete: {
-      Objects: objects
+      Objects: imageNames
     }
   };
-  s3.deleteObjects(options, function(err, data) {
+  s3.deleteObjects(options, (err, data) => {
     if (data) {
       console.log("File successfully deleted");
     } else {

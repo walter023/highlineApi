@@ -8,16 +8,12 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const signUp = async (req, res) => {
   try {
-    var user = await User.find({ email: req.body.email });
+    const user = await User.find({ email: req.body.email });
     if (user.length >= 1) throw new AppError("email already exsit.", 409);
-
-    await bcrypt.hash(req.body.password, 10, (error, hash) => {
-      if (error) throw new AppError(error);
-
-      var userData = new User({ email: req.body.email, password: hash });
-      userData.save();
-    });
-    res.json({ ...generalResponse, message: "user created." });
+    const hash = await bcrypt.hash(req.body.password, 10);
+    const userData = new User({ email: req.body.email, password: hash });
+    const newUser = await userData.save();
+    res.json({ ...generalResponse, message: "user created." + newUser._id });
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message
@@ -27,34 +23,32 @@ export const signUp = async (req, res) => {
 
 export const sigIn = async (req, res) => {
   try {
-    var user = await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
     if (!user) throw new AppError("email no found.", 404);
 
-    await bcrypt.compare(req.body.password, user.password, (error, result) => {
-      if (error) throw new AppError(error);
+    const result = await bcrypt.compare(req.body.password, user.password);
 
-      if (result) {
-        const token = jwt.sign(
-          {
-            email: user.email,
-            userId: user._id
-          },
-          process.env.JWT_KEY,
-          {
-            expiresIn: "1h"
-          }
-        );
-        res.json({
-          ...generalResponse,
-          message: "log in successful.",
-          data: token
-        });
-      } else {
-        res.status(401).json({
-          error: "auth failed."
-        });
-      }
-    });
+    if (result) {
+      const token = jwt.sign(
+        {
+          email: user.email,
+          userId: user._id
+        },
+        process.env.JWT_KEY,
+        {
+          expiresIn: "1h"
+        }
+      );
+      res.json({
+        ...generalResponse,
+        message: "log in successful.",
+        data: token
+      });
+    } else {
+      res.status(401).json({
+        error: "auth failed."
+      });
+    }
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message

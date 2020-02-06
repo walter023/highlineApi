@@ -34,15 +34,11 @@ export const getLocations = async (req, res) => {
       },
       { $limit: 20 }
     ]);
-    Location.populate(locations, { path: "highlines" }, (err, result) => {
-      if (err) {
-        throw new AppError(err);
-      }
-      if (result.length <= 0) {
-        throw new AppError("Sorry not highlines around you.", 404);
-      }
-      res.json({ ...generalResponse, data: result });
-    });
+    if (locations.length <= 0) {
+      throw new AppError("Sorry not highlines around you.", 404);
+    }
+    const highlines = await Location.populate(locations, { path: "highlines" });
+    res.json({ ...generalResponse, data: highlines });
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message
@@ -77,16 +73,10 @@ export const getLocationNames = async (req, res) => {
 
 export const searchLocation = async (req, res) => {
   try {
-    await Location.findOne({
+    const location = await Location.findOne({
       locationName: { $regex: `^${req.params.name}`, $options: "i" }
-    })
-      .populate("highlines")
-      .exec(function(err, location) {
-        if (err) {
-          throw new AppError(err);
-        }
-        res.json({ ...generalResponse, data: location });
-      });
+    }).populate("highlines");
+    res.json({ ...generalResponse, data: location });
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message
