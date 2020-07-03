@@ -35,10 +35,14 @@ export const getLocations = async (req, res) => {
       { $limit: 20 }
     ]);
     if (locations.length <= 0) {
-      throw new AppError("Sorry not highlines around you.", 404);
+      res.json({ message: "Sorry, we could not find any highline in this area.", messageCode: 404, data: [] });
     }
-    const highlines = await Location.populate(locations, { path: "highlines" });
-    res.json({ ...generalResponse, data: highlines });
+    else{
+      const highlines = await Location.populate(locations, { path: "highlines" });
+      res.json({ ...generalResponse, data: highlines });
+    }
+   
+
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message
