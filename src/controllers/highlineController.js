@@ -2,6 +2,7 @@ import Highline from "../models/highlineModel";
 import Location from "../models/locationModel";
 import AppError from "../utilities/appError";
 import { deleteS3Images } from "../utilities/storageImage";
+import { json } from "body-parser";
 
 var generalResponse = { messageCode: 200, message: "Success!", data: null };
 

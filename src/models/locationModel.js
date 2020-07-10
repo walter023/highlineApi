@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
 const LocationSchema = new Schema({
-  locationName: {
+  name: {
     type: String,
-    required: "Enter LocationName"
+    required: "Enter LocationName",
   },
   description: {
     type: String,

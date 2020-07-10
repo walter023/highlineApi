@@ -5,12 +5,12 @@ var generalResponse = { messageCode: 200, message: "Success!", data: null };
 
 export const addNewLocation = async (req, res) => {
   try {
-    let newLocation = new Location(req.body);
-    let saveLocation = await newLocation.save();
+    const newLocation = new Location(req.body);
+    const saveLocation = await newLocation.save();
     res.json({ ...generalResponse, data: saveLocation });
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -24,28 +24,31 @@ export const getLocations = async (req, res) => {
             type: "Point",
             coordinates: [
               parseFloat(req.params.long),
-              parseFloat(req.params.latt)
-            ]
+              parseFloat(req.params.latt),
+            ],
           },
           distanceField: "dist.calculated",
           maxDistance: 100000,
-          spherical: true
-        }
+          spherical: true,
+        },
       },
-      { $limit: 20 }
+      { $limit: 20 },
     ]);
     if (locations.length <= 0) {
-      res.json({ message: "Sorry, we could not find any highline in this area.", messageCode: 404, data: [] });
-    }
-    else{
-      const highlines = await Location.populate(locations, { path: "highlines" });
+      res.json({
+        message: "Sorry, we could not find any highline in this area.",
+        messageCode: 404,
+        data: [],
+      });
+    } else {
+      const highlines = await Location.populate(locations, {
+        path: "highlines",
+      });
       res.json({ ...generalResponse, data: highlines });
     }
-   
-
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -56,21 +59,21 @@ export const getLocationById = async (req, res) => {
     res.json({ ...generalResponse, data: location });
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
 export const getLocationNames = async (req, res) => {
   try {
     const location = await Location.find({
-      locationName: { $regex: `^${req.params.name}`, $options: "i" }
+      name: { $regex: `^${req.params.name}`, $options: "i" },
     })
-      .select("locationName description approach location")
+      .select("name description approach location")
       .limit(5);
-    res.json({ ...generalResponse, data: location });
+    res.json({ ...generalResponse, data: location});
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -78,12 +81,12 @@ export const getLocationNames = async (req, res) => {
 export const searchLocation = async (req, res) => {
   try {
     const location = await Location.findOne({
-      locationName: { $regex: `^${req.params.name}`, $options: "i" }
+      locationName: { $regex: `^${req.params.name}`, $options: "i" },
     }).populate("highlines");
     res.json({ ...generalResponse, data: location });
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
@@ -98,12 +101,12 @@ export const updateLocation = async (req, res) => {
     res.json({ ...generalResponse, data: locationToUpdate });
   } catch (error) {
     res.status(error.status || 500).json({
-      error: error.message
+      error: error.message,
     });
   }
 };
 
-const validateLocation = async locationId => {
+const validateLocation = async (locationId) => {
   if (!locationId) {
     throw new AppError("Highline id is required.");
   }
