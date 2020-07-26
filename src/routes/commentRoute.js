@@ -7,14 +7,14 @@ import {
 } from "../controllers/commentController";
 import auth from "../utilities/authorization";
 
-const commentRoute = app => {
+const commentRoute = (app, version) => {
   app
-    .route("/comment")
+    .route(`/${version}/comment`)
     .get(getsComments)
     .post(auth, addNewComment);
 
   app
-    .route("/comment/:commentId")
+    .route(`/${version}/comment/:commentId`)
     .get(auth, getcommentById)
     .put(auth, updateComment)
     .delete(auth, deleteComment);

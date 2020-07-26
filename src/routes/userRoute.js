@@ -1,9 +1,9 @@
 import { sigIn, signUp } from "../controllers/userController";
 
-const userRoutes = app => {
-  app.route("/signup").post(signUp);
+const userRoutes = (app, version) => {
+  app.route(`/${version}/signup`).post(signUp);
 
-  app.route("/signin").post(sigIn);
+  app.route(`/${version}/signin`).post(sigIn);
 };
 
 export default userRoutes;

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const subSchema = anchorSchema;
 
 const HighlineSchema = new Schema({
-  highlineName: {
+  name: {
     type: String,
     required: "Enter highline name"
   },

@@ -11,7 +11,7 @@ aws.config.update({
   accessKeyId: process.env.BUCKET_KEY_ID,
   region: "ap-southeast-2"
 });
-var s3 = new aws.S3();
+const s3 = new aws.S3();
 
 const storage = multerS3({
   s3: s3,
@@ -43,11 +43,11 @@ export default multer({
 });
 
 export const deleteS3Images = imageUrls => {
-  var imageNames = [];
+  const imageNames = [];
   for (let k of imageUrls) {
     imageNames.push({ Key: url.parse(k).path.substring(1) });
   }
-  var options = {
+  const options = {
     Bucket: "highlineguide",
     Delete: {
       Objects: imageNames
