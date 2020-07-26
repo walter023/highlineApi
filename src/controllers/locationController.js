@@ -17,14 +17,15 @@ export const addNewLocation = async (req, res) => {
 
 export const getLocations = async (req, res) => {
   try {
+    validateCoordinates(req.params);
     const locations = await Location.aggregate([
       {
         $geoNear: {
           near: {
             type: "Point",
             coordinates: [
-              parseFloat(req.params.long),
-              parseFloat(req.params.latt),
+              parseFloat(req.params.lng),
+              parseFloat(req.params.lat),
             ],
           },
           distanceField: "dist.calculated",
@@ -35,17 +36,15 @@ export const getLocations = async (req, res) => {
       { $limit: 20 },
     ]);
     if (locations.length <= 0) {
-      res.json({
-        message: "Sorry, we could not find any highline in this area.",
-        messageCode: 404,
-        data: [],
-      });
-    } else {
-      const highlines = await Location.populate(locations, {
-        path: "highlines",
-      });
-      res.json({ ...generalResponse, data: highlines });
+      throw new AppError(
+        "Sorry, we could not find any highline in this area.",
+        404
+      );
     }
+    const highlines = await Location.populate(locations, {
+      path: "highlines",
+    });
+    res.json({ ...generalResponse, data: highlines });
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message,
@@ -63,14 +62,15 @@ export const getLocationById = async (req, res) => {
     });
   }
 };
-export const getLocationNames = async (req, res) => {
+export const getLocationbyName = async (req, res) => {
   try {
     const location = await Location.find({
-      name: { $regex: `^${req.params.name}`, $options: "i" },
+      name: { $regex: `^${req.params.str}`, $options: "i" },
     })
       .select("name description approach location")
       .limit(5);
-    res.json({ ...generalResponse, data: location});
+
+    res.json({ ...generalResponse, data: location });
   } catch (error) {
     res.status(error.status || 500).json({
       error: error.message,
@@ -110,8 +110,23 @@ const validateLocation = async (locationId) => {
   if (!locationId) {
     throw new AppError("Highline id is required.");
   }
-  var location = await Location.findById(locationId);
+  const location = await Location.findById(locationId);
   if (!location) {
     throw new AppError("Highline no found.", 404);
+  }
+};
+
+const validateCoordinates = (coordinates) => {
+  const latitude = coordinates.lat;
+  const longitude = coordinates.lng;
+  if (!latitude || !longitude || longitude == "" || latitude == "") {
+    throw new AppError("longitude and latitude are required.", 411);
+  }
+  var reg = new RegExp("-?[0-9]{1,3}[.][0-9]+");
+  if (!reg.test(latitude)) {
+    throw new AppError("latitude not valid.", 422);
+  }
+  if (!reg.test(longitude)) {
+    throw new AppError("longitude not valid.", 422);
   }
 };

@@ -1,0 +1,1065 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Highline Guide book",
+    "description": "This guide is here to aid you in finding the highline locations or anchors for the lines.",
+    "contact": {
+      "name": "API Support",
+      "email": "walter.munoz@gmail.com"
+    }
+  },
+  "servers": [
+    {
+      "description": "Development",
+      "url": "http://54.252.252.136:8081/api/v1"
+    }
+  ],
+  "paths": {
+    "/location/{lng}/{lat}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Gets Locations within coordinates.",
+        "operationId": "getLocations",
+        "parameters": [
+          {
+            "name": "lng",
+            "in": "path",
+            "required": true,
+            "description": "longitude",
+            "type": "string"
+          },
+          {
+            "name": "lat",
+            "in": "path",
+            "required": true,
+            "description": "latitude",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-location-higlines"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            },
+            "links": {
+              "getHighlineById": {
+                "operationId": "getHighlineById",
+                "parameters": {
+                  "LocationID": "$response.body#/data"
+                },
+                "description": "The `_id` value returned in the response can be used as the `locaionID & highlineID` parameters in `GET api/v1/highline/:locationId/:highlineId`.\n"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/location": {
+      "post": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Creates a location.",
+        "operationId": "addNewLocation",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "description": "Creates a location.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                ]
+              },
+              "examples": {
+                "request": {
+                  "$ref": "#components/examples/object-location"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-location"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            },
+            "links": {
+              "addHighline": {
+                "operationId": "addHighline",
+                "parameters": {
+                  "LocationID": "$response.body#/data"
+                },
+                "description": "The `_id` value returned in the response can be used as the `locaionId` parameters in `POST api/v1/highline/:locationId`.\n"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/location/{locationId}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Gets gets a location.",
+        "operationId": "getLocationbyID",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "Location id `uuid`",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-location"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Updates a specific location.",
+        "operationId": "getLocationbyID",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "Location id `uuid`",
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "object location.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Location"
+                  }
+                ]
+              },
+              "examples": {
+                "request": {
+                  "$ref": "#components/examples/object-location"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/location/name/{str}": {
+      "get": {
+        "tags": [
+          "Location"
+        ],
+        "summary": "Gets all locations that contains the `str`.",
+        "operationId": "getLocationbyName",
+        "parameters": [
+          {
+            "name": "str",
+            "in": "path",
+            "required": true,
+            "description": "Location name",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-locations"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highline": {
+      "get": {
+        "tags": [
+          "Highline"
+        ],
+        "summary": "Gets all Highlines.",
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Highline"
+        ],
+        "summary": "Add a new highline.",
+        "operationId": "addHighline",
+        "requestBody": {
+          "description": "Highline Object.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Highline"
+                  }
+                ]
+              },
+              "examples": {
+                "request": {
+                  "$ref": "#components/examples/object-highline"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highline/image/{highlineId}": {
+      "put": {
+        "tags": [
+          "Highline"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "Add image(s) to the highline.",
+        "operationId": "addNewImage",
+        "parameters": [
+          {
+            "name": "highlineId",
+            "in": "path",
+            "required": true,
+            "description": "highlineId id `uuid`",
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "imagesUrl": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Highline"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "summary": "deletes image(s) of the highline.",
+        "operationId": "deleteImages",
+        "parameters": [
+          {
+            "name": "highlineId",
+            "in": "path",
+            "required": true,
+            "description": "highlineId id `uuid`",
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "object Highline.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "images": {
+                  "type": "array"
+                }
+              },
+              "examples": {
+                "request": {
+                  "value": {
+                    "images": [
+                      "https://highlineguide.s3.ap-southeast-2.amazonaws.com/highlines/1595723264583"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highline/{locationId}/{higlineId}": {
+      "get": {
+        "tags": [
+          "Highline"
+        ],
+        "summary": "Gets a specific highline.",
+        "operationId": "getHighlineById",
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "locationId",
+            "type": "string"
+          },
+          {
+            "name": "higlineId",
+            "in": "path",
+            "required": true,
+            "description": "higlineId",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-location-higlines"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Highline"
+        ],
+        "summary": "Updates a specific Highline.",
+        "operationId": "updateHighline",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "locationId",
+            "type": "string"
+          },
+          {
+            "name": "higlineId",
+            "in": "path",
+            "required": true,
+            "description": "higlineId",
+            "type": "string"
+          }
+        ],
+        "requestBody": {
+          "description": "object Highline.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/Highline"
+                  }
+                ]
+              },
+              "examples": {
+                "request": {
+                  "$ref": "#components/examples/object-highline"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Highline"
+        ],
+        "summary": "Deletes a specific Highline.",
+        "operationId": "deleteHighline",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "locationId",
+            "in": "path",
+            "required": true,
+            "description": "locationId",
+            "type": "string"
+          },
+          {
+            "name": "higlineId",
+            "in": "path",
+            "required": true,
+            "description": "higlineId",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "$ref": "#components/examples/response-highline"
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/signin": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Log in to the system.",
+        "operationId": "sigIn",
+        "requestBody": {
+          "description": "SigIn Object.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/User"
+                  }
+                ]
+              },
+              "examples": {
+                "request": {
+                  "value": {
+                    "email": "eamil@example.com ",
+                    "password": "passworjdl!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "An object response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#components/responses/generalResponse"
+                    }
+                  ]
+                },
+                "examples": {
+                  "success": {
+                    "summary": "Success response",
+                    "value": {
+                      "messageCode": 200,
+                      "message": "Success!",
+                      "data": "JWT"
+                    }
+                  },
+                  "fail": {
+                    "$ref": "#components/examples/fail"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "Location": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "location": {
+            "coordinates": {
+              "type": "array"
+            },
+            "type": "Point"
+          },
+          "approach": {
+            "type": "string"
+          },
+          "created_date": {
+            "type": "date"
+          },
+          "highlines": {
+            "type": "array",
+            "highlines": {
+              "$ref": "#components/schemas/Highline"
+            }
+          }
+        }
+      },
+      "Highline": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "remarks": {
+            "type": "string"
+          },
+          "lng": {
+            "type": "string"
+          },
+          "high": {
+            "type": "string"
+          },
+          "anchors": {
+            "type": "object",
+            "properties": {
+              "rhs": {
+                "type": "object",
+                "properties": {
+                  "main": {
+                    "type": "string"
+                  },
+                  "howManyOnMain": {
+                    "type": "number"
+                  },
+                  "backup": {
+                    "type": "string"
+                  },
+                  "howMany": {
+                    "type": "number"
+                  }
+                }
+              },
+              "lhs": {
+                "type": "object",
+                "properties": {
+                  "main": {
+                    "type": "string"
+                  },
+                  "howManyOnMain": {
+                    "type": "number"
+                  },
+                  "backup": {
+                    "type": "string"
+                  },
+                  "howMany": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "imagesUrl": [
+            {
+              "type": "string"
+            }
+          ],
+          "establishedBy": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "array"
+          },
+          "created_date": {
+            "type": "date"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "password"
+          }
+        }
+      }
+    },
+    "responses": {
+      "generalResponse": {
+        "type": "object",
+        "properties": {
+          "messageCode": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "any"
+          }
+        }
+      }
+    },
+    "examples": {
+      "response-location-higlines": {
+        "summary": "Success response",
+        "value": {
+          "messageCode": 200,
+          "message": "Success!",
+          "data": [
+            {
+              "_id": "Location id",
+              "name": "Location Name",
+              "description": "Description",
+              "approach": "Approach",
+              "location": {
+                "coordinates": [
+                  150.248469,
+                  -33.597318
+                ],
+                "type": "Point"
+              },
+              "highlines": [
+                {
+                  "imagesUrl": [
+                    "link",
+                    "link"
+                  ],
+                  "comments": [],
+                  "_id": "5cfc75ba72442c3ace0d8a5c",
+                  "name": "Highline name.",
+                  "remarks": "Highline remarks.",
+                  "long": "62m",
+                  "high": "70m",
+                  "establishedBy": "Highliner(s) name(s).",
+                  "__v": 0,
+                  "anchors": {
+                    "rhs": {
+                      "main": "Tree",
+                      "howManyOnMain": 1,
+                      "backup": "Tree",
+                      "howMany": 0
+                    },
+                    "lhs": {
+                      "main": "Ring_Bolt",
+                      "howManyOnMain": 2,
+                      "backup": "Ring_Bolt",
+                      "howMany": 2
+                    }
+                  }
+                }
+              ],
+              "dist": {
+                "calculated": 70396.91042470565
+              },
+              "created_date": "2019-06-09T02:47:13.653Z",
+              "__v": 0
+            }
+          ]
+        }
+      },
+      "response-location": {
+        "summary": "Success response",
+        "value": {
+          "messageCode": 200,
+          "message": "Success!",
+          "data": {
+            "_id": "id",
+            "location": {
+              "coordinates": [
+                150.248469,
+                -33.597318
+              ],
+              "type": "Point"
+            },
+            "name": "Corroboree Walls",
+            "description": "Description",
+            "approach": "Approach",
+            "created_date": "2019-06-09T02:47:13.653Z",
+            "__v": 0
+          }
+        }
+      },
+      "object-location": {
+        "value": {
+          "name": "Location Name",
+          "description": "Location Description",
+          "approach": "Location Approach",
+          "location": {
+            "coordinates": [
+              150.248469,
+              -33.597318
+            ],
+            "type": "Point"
+          }
+        }
+      },
+      "response-locations": {
+        "summary": "Success response",
+        "value": {
+          "messageCode": 200,
+          "message": "Success!",
+          "data": [
+            {
+              "_id": "id",
+              "location": {
+                "coordinates": [
+                  150.248469,
+                  -33.597318
+                ],
+                "type": "Point"
+              },
+              "name": "Location Name",
+              "description": "Location Description",
+              "approach": "Location Approach",
+              "created_date": "2019-06-09T02:47:13.653Z",
+              "__v": 0
+            }
+          ]
+        }
+      },
+      "object-highline": {
+        "value": {
+          "imagesUrl": [
+            "link",
+            "link"
+          ],
+          "name": "Highline name",
+          "remarks": "Highline Remakrs",
+          "long": "Highline long",
+          "high": "Highline high",
+          "establishedBy": "Highliner(s) name(s)",
+          "anchors": {
+            "rhs": {
+              "main": "Tree",
+              "howManyOnMain": 1,
+              "backup": "Tree",
+              "howMany": 0
+            },
+            "lhs": {
+              "main": "Ring_Bolt",
+              "howManyOnMain": 2,
+              "backup": "Ring_Bolt",
+              "howMany": 2
+            }
+          }
+        }
+      },
+      "response-highline": {
+        "summary": "Success response",
+        "value": {
+          "messageCode": 200,
+          "message": "Success!",
+          "data": {
+            "imagesUrl": [
+              "link",
+              "link"
+            ],
+            "comments": [],
+            "name": "Highline name",
+            "remarks": "Highline Remakrs",
+            "long": "Highline long",
+            "high": "Highline high",
+            "establishedBy": "Highliner(s) name(s)",
+            "__v": 0,
+            "anchors": {
+              "rhs": {
+                "main": "Tree",
+                "howManyOnMain": 1,
+                "backup": "Tree",
+                "howMany": 0
+              },
+              "lhs": {
+                "main": "Ring_Bolt",
+                "howManyOnMain": 2,
+                "backup": "Ring_Bolt",
+                "howMany": 2
+              }
+            }
+          }
+        }
+      },
+      "fail": {
+        "summary": "Failed response",
+        "value": {
+          "error": "message describing the error."
+        }
+      }
+    }
+  }
+}
