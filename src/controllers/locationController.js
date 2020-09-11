@@ -64,12 +64,15 @@ export const getLocationById = async (req, res) => {
 };
 export const getLocationbyName = async (req, res) => {
   try {
-    const location = await Location.find({
-      name: { $regex: `^${req.params.str}`, $options: "i" },
-    })
+    const location = await Location.find(
+       req.params.str 
+        ? {
+            name: { $regex: `^${req.params.str}`, $options: "i" },
+          }
+        : {}
+    )
       .select("name description approach location")
       .limit(5);
-
     res.json({ ...generalResponse, data: location });
   } catch (error) {
     res.status(error.status || 500).json({

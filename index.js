@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import path from "path";
 
 import locationRoutes from "./src/routes/locationRoute";
 import highlineRoute from "./src/routes/highlineRoute";
@@ -19,7 +20,6 @@ const version = process.env.VERSION;
 
 // mongoose connection
 mongoose.Promise = global.Promise;
-
 mongoose.connect(
   process.env.DB_URL,
   {
@@ -40,7 +40,6 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 locationRoutes(app, version);
 highlineRoute(app, version);
